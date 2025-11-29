@@ -53,6 +53,18 @@ set_quota_inode_group () {
     setquota -u $x 0 0 10000 15000 $POINT_MONTAGE_HOME
   done
 }
+#---------------------verification---------------------#
+verification () {
+   for x in $LIST_USER
+   do
+     SOFT_LIMIT=$(quota -u $LIST_USER |tail -n 1 |awk '{print $3}')
+     USED=$(quota -u $LIST_USER |tail -n 1 |awk '{print $2}')
+     if [ $USED -gt $SOFT_LIMIT ]
+     then 
+        echo "le soft limite est atteint" |mail -s "admin" $x 
+     fi
+   done
+}
 
 activation_quota
 get_user
